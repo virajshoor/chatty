@@ -3,6 +3,7 @@ export type ChatMessage = {
   content: string;
   user: string;
   role: "user" | "assistant";
+  timestamp?: number;
 };
 
 export type Message =

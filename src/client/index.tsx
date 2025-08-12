@@ -1,6 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { usePartySocket } from "partysocket/react";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -12,10 +12,70 @@ import { nanoid } from "nanoid";
 
 import { names, type ChatMessage, type Message } from "../shared";
 
-function App() {
+// Send icon SVG component
+const SendIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// Chat bubble component
+const ChatBubble = ({ message, isOwnMessage }: { message: ChatMessage; isOwnMessage: boolean }) => {
+  const formatTime = (timestamp: number) => {
+    return new Date(timestamp).toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
+
+  return (
+    <div className={`message ${isOwnMessage ? 'own-message' : ''}`}>
+      <div className="message-avatar">
+        {message.user.charAt(0).toUpperCase()}
+      </div>
+      <div className="message-content">
+        <div className="message-user">{message.user}</div>
+        <div className="message-text">{message.content}</div>
+        <div className="message-time">
+          {formatTime(message.timestamp || Date.now())}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Welcome screen component
+const WelcomeScreen = () => (
+  <div className="welcome-screen">
+    <h1>🚀 CloudChat</h1>
+    <p>
+      Experience real-time messaging powered by Cloudflare Pages and Durable Objects. 
+      Create a new room or join an existing one to start chatting with others instantly.
+    </p>
+    <div style={{ fontSize: '14px', opacity: 0.8 }}>
+      Built with React, PartyKit, and Cloudflare Workers
+    </div>
+  </div>
+);
+
+// Main chat app component
+function ChatApp() {
   const [name] = useState(names[Math.floor(Math.random() * names.length)]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [inputValue, setInputValue] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const { room } = useParams();
+
+  // Auto-scroll to bottom when new messages arrive
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const socket = usePartySocket({
     party: "chat",
@@ -25,7 +85,7 @@ function App() {
       if (message.type === "add") {
         const foundIndex = messages.findIndex((m) => m.id === message.id);
         if (foundIndex === -1) {
-          // probably someone else who added a message
+          // Add new message with timestamp
           setMessages((messages) => [
             ...messages,
             {
@@ -33,12 +93,11 @@ function App() {
               content: message.content,
               user: message.user,
               role: message.role,
+              timestamp: Date.now(),
             },
           ]);
         } else {
-          // this usually means we ourselves added a message
-          // and it was broadcasted back
-          // so let's replace the message with the new message
+          // Update existing message
           setMessages((messages) => {
             return messages
               .slice(0, foundIndex)
@@ -47,6 +106,7 @@ function App() {
                 content: message.content,
                 user: message.user,
                 role: message.role,
+                timestamp: Date.now(),
               })
               .concat(messages.slice(foundIndex + 1));
           });
@@ -60,72 +120,132 @@ function App() {
                   content: message.content,
                   user: message.user,
                   role: message.role,
+                  timestamp: Date.now(),
                 }
               : m,
           ),
         );
-      } else {
-        setMessages(message.messages);
+      } else if (message.type === "all") {
+        // Add timestamps to loaded messages
+        setMessages(message.messages.map(msg => ({
+          ...msg,
+          timestamp: msg.timestamp || Date.now()
+        })));
       }
     },
   });
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputValue.trim()) return;
+
+    const chatMessage: ChatMessage = {
+      id: nanoid(8),
+      content: inputValue.trim(),
+      user: name,
+      role: "user",
+      timestamp: Date.now(),
+    };
+
+    setMessages((messages) => [...messages, chatMessage]);
+    socket.send(
+      JSON.stringify({
+        type: "add",
+        ...chatMessage,
+      } satisfies Message),
+    );
+
+    setInputValue("");
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputValue(e.target.value);
+    // Auto-resize textarea
+    e.target.style.height = 'auto';
+    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+  };
+
   return (
-    <div className="chat container">
-      {messages.map((message) => (
-        <div key={message.id} className="row message">
-          <div className="two columns user">{message.user}</div>
-          <div className="ten columns">{message.content}</div>
+    <div className="chat-container">
+      {/* Header */}
+      <div className="chat-header">
+        <h1>
+          💬 CloudChat
+        </h1>
+        <div className="room-info">
+          <div className="room-id">Room: {room}</div>
+          <div className="user-info">
+            <div className="user-avatar">
+              {name.charAt(0).toUpperCase()}
+            </div>
+            <span>{name}</span>
+          </div>
         </div>
-      ))}
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          const content = e.currentTarget.elements.namedItem(
-            "content",
-          ) as HTMLInputElement;
-          const chatMessage: ChatMessage = {
-            id: nanoid(8),
-            content: content.value,
-            user: name,
-            role: "user",
-          };
-          setMessages((messages) => [...messages, chatMessage]);
-          // we could broadcast the message here
+      </div>
 
-          socket.send(
-            JSON.stringify({
-              type: "add",
-              ...chatMessage,
-            } satisfies Message),
-          );
+      {/* Messages */}
+      <div className="messages-container">
+        {messages.map((message) => (
+          <ChatBubble
+            key={message.id}
+            message={message}
+            isOwnMessage={message.user === name}
+          />
+        ))}
+        {isTyping && (
+          <div className="typing-indicator">
+            <div className="typing-dot"></div>
+            <div className="typing-dot"></div>
+            <div className="typing-dot"></div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
 
-          content.value = "";
-        }}
-      >
-        <input
-          type="text"
-          name="content"
-          className="ten columns my-input-text"
-          placeholder={`Hello ${name}! Type a message...`}
-          autoComplete="off"
-        />
-        <button type="submit" className="send-message two columns">
-          Send
+      {/* Input */}
+      <form className="input-container" onSubmit={handleSubmit}>
+        <div className="input-wrapper">
+          <textarea
+            className="message-input"
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyPress={handleKeyPress}
+            placeholder={`Hello ${name}! Type a message...`}
+            autoComplete="off"
+            rows={1}
+          />
+        </div>
+        <button 
+          type="submit" 
+          className="send-button"
+          disabled={!inputValue.trim()}
+        >
+          <SendIcon />
         </button>
       </form>
     </div>
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-createRoot(document.getElementById("root")!).render(
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<Navigate to={`/${nanoid()}`} />} />
-      <Route path="/:room" element={<App />} />
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
-  </BrowserRouter>,
-);
+// Main app component with routing
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<WelcomeScreen />} />
+        <Route path="/:room" element={<ChatApp />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+// Render the app
+createRoot(document.getElementById("root")!).render(<App />);
