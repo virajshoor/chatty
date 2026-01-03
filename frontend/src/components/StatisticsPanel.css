@@ -1,0 +1,135 @@
+.statistics-panel {
+  height: fit-content;
+}
+
+.overview-section,
+.numeric-section,
+.categorical-section {
+  margin-bottom: 2rem;
+}
+
+.overview-section h4,
+.numeric-section h4,
+.categorical-section h4 {
+  color: #4a5568;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.stat-item {
+  background: #f7fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stat-label {
+  color: #718096;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.stat-value {
+  color: #2d3748;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.stat-value.warning {
+  color: #ef4444;
+}
+
+.column-stats {
+  background: #f7fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.column-header strong {
+  color: #2d3748;
+  font-size: 1rem;
+}
+
+.missing-badge {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.stats-grid-small {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.75rem;
+}
+
+.stat-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-mini .label {
+  color: #718096;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.stat-mini .value {
+  color: #2d3748;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.categorical-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.categorical-info p {
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.info-label {
+  color: #718096;
+  font-weight: 600;
+}
+
+.info-value {
+  color: #2d3748;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid-small {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

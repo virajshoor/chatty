@@ -1,0 +1,256 @@
+.patterns-panel {
+  margin-bottom: 2rem;
+}
+
+.patterns-section,
+.correlations-section {
+  margin-bottom: 2rem;
+}
+
+.patterns-section h4,
+.correlations-section h4 {
+  color: #4a5568;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.section-description {
+  color: #718096;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.patterns-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.pattern-card {
+  background: #f7fafc;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+}
+
+.pattern-card.cyclical {
+  border-left-color: #8b5cf6;
+}
+
+.pattern-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.pattern-icon {
+  font-size: 1.5rem;
+}
+
+.pattern-type {
+  color: #2d3748;
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.confidence-badge {
+  margin-left: auto;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.confidence-badge.high {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.confidence-badge.moderate {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.pattern-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pattern-column {
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.pattern-column strong {
+  color: #2d3748;
+  font-weight: 700;
+}
+
+.pattern-description {
+  color: #2d3748;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.pattern-details {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.detail-item {
+  background: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #4a5568;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+.correlations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.correlation-item {
+  background: #f7fafc;
+  padding: 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.correlation-columns {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.column-name {
+  background: white;
+  color: #2d3748;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.correlation-arrow {
+  font-size: 1.2rem;
+}
+
+.correlation-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.correlation-bar-container {
+  flex: 1;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.correlation-bar {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.correlation-bar.positive {
+  background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.correlation-bar.negative {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.correlation-value {
+  font-weight: 800;
+  font-size: 1.1rem;
+  font-family: 'Courier New', monospace;
+  min-width: 60px;
+  text-align: right;
+}
+
+.correlation-value.positive {
+  color: #059669;
+}
+
+.correlation-value.negative {
+  color: #dc2626;
+}
+
+.strength-badge {
+  padding: 0.375rem 0.875rem;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  align-self: flex-start;
+}
+
+.strength-badge.positive {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.strength-badge.negative {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.no-patterns {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: #f7fafc;
+  border-radius: 8px;
+}
+
+.info-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.no-patterns p {
+  color: #4a5568;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.no-patterns .subtext {
+  color: #718096;
+  font-size: 0.9rem;
+  font-weight: 400;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .patterns-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .correlation-columns {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .correlation-arrow {
+    transform: rotate(90deg);
+    align-self: center;
+  }
+}
