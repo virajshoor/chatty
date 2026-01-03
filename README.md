@@ -24,17 +24,31 @@ An intelligent application that analyzes CSV and JSON data to identify patterns,
 - Node.js 16+
 - npm or yarn
 
-### Backend Setup
+### Quick Start (Automated)
+
+```bash
+# On macOS/Linux:
+./start.sh
+
+# On Windows:
+start.bat
+```
+
+### Manual Setup
+
+#### Backend Setup
 
 ```bash
 cd backend
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 python app.py
 ```
 
-The backend will run on `http://localhost:5000`
+The backend API will run on `http://localhost:5000`
 
-### Frontend Setup
+#### Frontend Setup (in a new terminal)
 
 ```bash
 cd frontend
@@ -46,11 +60,16 @@ The frontend will run on `http://localhost:3000`
 
 ## Usage
 
-1. Launch both backend and frontend servers
-2. Open your browser to `http://localhost:3000`
-3. Upload a CSV or JSON file
-4. View detected patterns, anomalies, and statistical insights
-5. Explore visualizations and download reports
+⚠️ **IMPORTANT**: Access the application at **http://localhost:3000** (frontend), NOT port 5000!
+
+1. Launch both backend and frontend servers (or use automated startup script)
+2. Open your browser to `http://localhost:3000` ← Use this URL
+3. Upload a CSV or JSON file (try the examples in `examples/` folder)
+4. Click "Analyze Data" 
+5. View detected patterns, anomalies, and statistical insights
+6. Explore the interactive dashboard
+
+**Note:** Port 5000 is the backend API only - you should always access the UI via port 3000.
 
 ## API Endpoints
 

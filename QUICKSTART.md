@@ -42,10 +42,14 @@ npm start
 
 ## Try It Out
 
-1. Go to http://localhost:3000
+⚠️ **IMPORTANT**: Open your browser to **http://localhost:3000** (NOT port 5000!)
+
+1. Go to **http://localhost:3000** ← The frontend UI
 2. Upload `examples/sample_health_data.csv`
 3. Click "Analyze Data"
 4. Explore the results!
+
+**Note:** Port 5000 is the backend API only - always use port 3000 in your browser!
 
 ## What's Next?
 

@@ -313,6 +313,31 @@ def analyze_data(df):
     except Exception as e:
         raise Exception(f"Analysis error: {str(e)}")
 
+@app.route('/', methods=['GET'])
+def index():
+    """Root endpoint - API information"""
+    return jsonify({
+        'name': 'AI Pattern & Sickness Detection API',
+        'version': '1.0.0',
+        'status': 'running',
+        'description': 'Upload CSV or JSON files to detect patterns, anomalies, and insights',
+        'endpoints': {
+            'GET /': 'API information (this page)',
+            'GET /api/health': 'Health check',
+            'POST /api/analyze': 'Upload and analyze data file (multipart/form-data)'
+        },
+        'supported_formats': ['CSV', 'JSON'],
+        'max_file_size': '16MB',
+        'features': [
+            'Anomaly Detection (Isolation Forest, Z-Score, IQR)',
+            'Pattern Recognition (Trends, Cycles)',
+            'Correlation Analysis',
+            'Statistical Insights',
+            'AI-Generated Recommendations'
+        ],
+        'frontend_url': 'http://localhost:3000'
+    })
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
